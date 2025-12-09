@@ -13,10 +13,14 @@ return new class extends Migration
     {
         Schema::create('users', function (Blueprint $table) {
             $table->id();
+            $table->string('nik', 16)->unique(); // Sesuai kebutuhan layanan publik
             $table->string('name');
             $table->string('email')->unique();
+            $table->string('phone_number')->nullable(); // Untuk kontak pengaduan
+            $table->string('ktp_photo')->nullable(); // Path foto KTP
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
+            $table->enum('role', ['admin', 'warga'])->default('warga'); // Persiapan pemisahan hak akses
             $table->rememberToken();
             $table->timestamps();
         });
