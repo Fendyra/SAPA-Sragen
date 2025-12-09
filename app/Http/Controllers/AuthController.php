@@ -55,7 +55,7 @@ class AuthController extends Controller
             'email' => $request->email,
             'phone_number' => $request->phone_number,
             'ktp_photo' => $ktpPath,
-            'password' => Hash::make($request->password), 
+            'password' => Hash::make($request->password),
             'role' => 'warga'
         ]);
 
@@ -77,9 +77,9 @@ class AuthController extends Controller
         ]);
 
         if (Auth::attempt($credentials)) {
-            $request->session()->regenerate(); 
+            $request->session()->regenerate();
 
-            return redirect()->intended('/'); 
+            return redirect()->intended('/dashboard');
         }
 
         return back()->withErrors([
