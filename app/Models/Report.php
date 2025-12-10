@@ -5,6 +5,49 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
+/**
+ * @property int $id
+ * @property int $user_id
+ * @property string $ticket_number
+ * @property string $title
+ * @property string $category
+ * @property string $description
+ * @property string $district
+ * @property string $village
+ * @property string $address
+ * @property float|null $latitude
+ * @property float|null $longitude
+ * @property string $status
+ * @property bool $is_anonymous
+ * @property bool $is_public
+ * @property array<array-key, mixed>|null $attachments
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read string $status_color
+ * @property-read string $status_label
+ * @property-read \App\Models\User $user
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Report newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Report newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Report query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Report whereAddress($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Report whereAttachments($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Report whereCategory($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Report whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Report whereDescription($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Report whereDistrict($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Report whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Report whereIsAnonymous($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Report whereIsPublic($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Report whereLatitude($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Report whereLongitude($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Report whereStatus($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Report whereTicketNumber($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Report whereTitle($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Report whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Report whereUserId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Report whereVillage($value)
+ * @mixin \Eloquent
+ */
 class Report extends Model
 {
     /**
