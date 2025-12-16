@@ -20,7 +20,7 @@ return new class extends Migration
             $table->text('description');
             $table->string('location')->nullable();
             $table->string('image')->nullable();
-            $table->enum('status', ['pending', 'proses', 'selesai', 'ditolak'])->default('pending');
+            $table->enum('status', ['pending', 'proses', 'menunggu_validasi', 'selesai', 'ditolak'])->default('pending');
             $table->timestamps();
         });
     }
