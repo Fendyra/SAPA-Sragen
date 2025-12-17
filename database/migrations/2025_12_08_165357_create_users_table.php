@@ -20,7 +20,7 @@ return new class extends Migration
             $table->string('ktp_photo')->nullable(); // Path foto KTP
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
-            $table->enum('role', ['admin', 'warga'])->default('warga'); // Persiapan pemisahan hak akses
+            $table->enum('role', ['admin', 'warga', 'opd'])->default('warga'); // Persiapan pemisahan hak akses
             $table->rememberToken();
             $table->timestamps();
         });
