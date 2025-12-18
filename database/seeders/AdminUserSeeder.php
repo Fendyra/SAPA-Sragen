@@ -13,12 +13,15 @@ class AdminUserSeeder extends Seeder
      */
     public function run(): void
     {
+        // Clear existing admin users
+        User::where('role', 'admin')->delete();
+
         User::create([
             'nik' => '3314000000000001',
             'name' => 'Admin SAPA Sragen',
-            'email' => 'admin@sapasragen.id',
+            'email' => 'admin@admin.com',
             'phone_number' => '081234567890',
-            'password' => Hash::make('password'),
+            'password' => Hash::make('adm123'),
             'role' => 'admin',
             'email_verified_at' => now(),
         ]);

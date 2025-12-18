@@ -14,6 +14,9 @@ class ReportSeeder extends Seeder
      */
     public function run(): void
     {
+        // Clear existing reports to avoid duplicate key errors
+        Report::truncate();
+
         // Get the first user or create one
         $user = User::first() ?? User::create([
             'nik' => '3314010101010001',
