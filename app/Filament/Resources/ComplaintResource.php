@@ -3,6 +3,7 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\ComplaintResource\Pages;
+use App\Filament\Resources\ComplaintResource\RelationManagers\ResponsesRelationManager;
 use App\Models\Complaint;
 use Filament\Forms;
 use Filament\Forms\Form;
@@ -108,7 +109,9 @@ class ComplaintResource extends Resource
 
     public static function getRelations(): array
     {
-        return [];
+        return [
+            ResponsesRelationManager::class,
+        ];
     }
 
     public static function getPages(): array

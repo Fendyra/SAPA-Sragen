@@ -15,7 +15,7 @@ class ReportController extends Controller
     public function index()
     {
         // GANTI INI: Pakai Auth::id() biar gak error di VS Code
-        $userId = Auth::id(); 
+        $userId = Auth::id();
 
         $reports = Complaint::where('user_id', $userId)
             ->with('category')
@@ -115,7 +115,7 @@ class ReportController extends Controller
         $categoryId = $request->category_id;
         if (!is_numeric($request->category_id)) {
             $cat = Category::where('name', 'like', '%' . $request->category_id . '%')->first();
-            $categoryId = $cat ? $cat->id : 1; 
+            $categoryId = $cat ? $cat->id : 1;
         }
 
         $fullLocation = $validated['address'] . ', Desa ' . $validated['village'] . ', Kec. ' . $validated['district'];
@@ -126,9 +126,9 @@ class ReportController extends Controller
             'title' => $validated['title'],
             'description' => $validated['description'],
             'location' => $fullLocation,
-            'image' => $imagePath, 
+            'image' => $imagePath,
             'images' => $imagePaths,
-            'status' => 'pending', 
+            'status' => 'pending',
         ]);
 
         return redirect()->route('reports.show', $complaint->id)
@@ -140,11 +140,17 @@ class ReportController extends Controller
      */
     public function show($id)
     {
-        $report = Complaint::with(['user', 'category', 'responses'])->findOrFail($id);
+        $report = Complaint::with([
+            'user',
+            'category',
+            'responses' => function ($query) {
+                $query->where('is_public', true)->with('user');
+            },
+        ])->findOrFail($id);
 
         // Ganti auth()->check() jadi Auth::check()
         if (Auth::check() && $report->user_id != Auth::id() && Auth::user()->role == 'warga') {
-             // Opsional: abort(403);
+            // Opsional: abort(403);
         }
 
         return view('reports.show', compact('report'));

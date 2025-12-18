@@ -20,7 +20,7 @@ class DashboardController extends Controller
         // Fetch user's complaints statistics
         $totalReports = Complaint::where('user_id', $userId)->count();
         $processingReports = Complaint::where('user_id', $userId)
-            ->whereIn('status', ['pending', 'proses'])
+            ->whereIn('status', ['pending', 'proses', 'menunggu_validasi'])
             ->count();
         $completedReports = Complaint::where('user_id', $userId)
             ->where('status', 'selesai')
