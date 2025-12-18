@@ -34,6 +34,8 @@ class Category extends Model
         'name',
         'slug',
         'description',
+        'examples',
+        'opd_target',
         'is_active',
     ];
 

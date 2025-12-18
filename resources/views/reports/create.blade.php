@@ -68,7 +68,19 @@
                         <label for="category_id" class="block text-sm font-medium text-gray-700 mb-2">
                             Kategori <span class="text-red-500">*</span>
                         </label>
+                        @php
+                            $categoryInfo = $categories->map(function ($c) {
+                                return [
+                                    'id' => $c->id,
+                                    'name' => $c->name,
+                                    'description' => $c->description,
+                                    'examples' => $c->examples,
+                                    'opd_target' => $c->opd_target,
+                                ];
+                            })->values();
+                        @endphp
                         <select id="category_id" name="category_id"
+                            data-category-info='@json($categoryInfo)'
                             class="w-full border border-gray-300 rounded-lg px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent @error('category_id') border-red-500 @enderror"
                             required>
                             <option value="">Pilih Kategori Laporan</option>
@@ -84,6 +96,29 @@
                         @error('category_id')
                             <p class="text-xs text-red-500 mt-1">{{ $message }}</p>
                         @enderror
+
+                        <!-- Informasi Subkategori (Info saja, bukan input) -->
+                        <div id="category-info" class="hidden mt-3 bg-blue-50 border border-blue-200 rounded-lg p-4">
+                            <div class="flex items-start space-x-3">
+                                <svg class="w-5 h-5 text-blue-600 mt-0.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                </svg>
+                                <div class="text-sm">
+                                    <p class="font-semibold text-blue-900 mb-1">Info Subkategori</p>
+                                    <p id="category-desc" class="text-blue-800"></p>
+
+                                    <div id="category-examples-wrap" class="mt-2">
+                                        <p class="font-semibold text-blue-900">Contoh Subkategori:</p>
+                                        <p id="category-examples" class="text-blue-800"></p>
+                                    </div>
+
+                                    <div id="category-opd-wrap" class="mt-2">
+                                        <p class="font-semibold text-blue-900">OPD Tujuan (Email Mapping):</p>
+                                        <p id="category-opd" class="text-blue-800"></p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
 
                     <div class="mb-5">
@@ -238,18 +273,84 @@
 
     @push('scripts')
         <script>
+            let CATEGORY_INFO = [];
+
             let selectedFiles = [];
 
             // Event listener untuk file input
             document.addEventListener('DOMContentLoaded', function() {
                 const fileInput = document.getElementById('files');
+                const categorySelect = document.getElementById('category_id');
+
+                if (categorySelect && categorySelect.dataset && categorySelect.dataset.categoryInfo) {
+                    try {
+                        CATEGORY_INFO = JSON.parse(categorySelect.dataset.categoryInfo);
+                    } catch (e) {
+                        CATEGORY_INFO = [];
+                    }
+                }
                 
                 fileInput.addEventListener('change', function(event) {
                     handleFileSelect(event);
                 });
+
+                if (categorySelect) {
+                    categorySelect.addEventListener('change', function() {
+                        updateCategoryInfo();
+                    });
+                    updateCategoryInfo();
+                }
                 
                 console.log('Upload script loaded successfully');
             });
+
+            function updateCategoryInfo() {
+                const categorySelect = document.getElementById('category_id');
+                const infoBox = document.getElementById('category-info');
+                const descEl = document.getElementById('category-desc');
+                const examplesWrap = document.getElementById('category-examples-wrap');
+                const examplesEl = document.getElementById('category-examples');
+                const opdWrap = document.getElementById('category-opd-wrap');
+                const opdEl = document.getElementById('category-opd');
+
+                if (!categorySelect || !infoBox || !descEl) return;
+
+                const selectedId = categorySelect.value;
+                if (!selectedId) {
+                    infoBox.classList.add('hidden');
+                    return;
+                }
+
+                const category = CATEGORY_INFO.find(c => String(c.id) === String(selectedId));
+                if (!category) {
+                    infoBox.classList.add('hidden');
+                    return;
+                }
+
+                descEl.textContent = category.description || '';
+
+                const examples = category.examples || '';
+                if (examplesWrap && examplesEl) {
+                    if (examples.trim().length > 0) {
+                        examplesWrap.classList.remove('hidden');
+                        examplesEl.textContent = examples;
+                    } else {
+                        examplesWrap.classList.add('hidden');
+                    }
+                }
+
+                const opdTarget = category.opd_target || '';
+                if (opdWrap && opdEl) {
+                    if (opdTarget.trim().length > 0) {
+                        opdWrap.classList.remove('hidden');
+                        opdEl.textContent = opdTarget;
+                    } else {
+                        opdWrap.classList.add('hidden');
+                    }
+                }
+
+                infoBox.classList.remove('hidden');
+            }
 
             function handleFileSelect(event) {
                 const files = Array.from(event.target.files);
