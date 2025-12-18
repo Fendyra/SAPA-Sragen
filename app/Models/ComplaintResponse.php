@@ -31,11 +31,15 @@ class ComplaintResponse extends Model
         'complaint_id',
         'user_id',
         'response',
+        'images',
+        'is_public',
     ];
 
     protected $casts = [
         'created_at' => 'datetime',
         'updated_at' => 'datetime',
+        'images' => 'array',
+        'is_public' => 'boolean',
     ];
 
     /**
