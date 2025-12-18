@@ -256,7 +256,7 @@
                                     d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" />
                             </svg>
                         </div>
-                        <h3 class="text-lg font-bold text-gray-900 mb-1">Ghalitya Faradiba</h3>
+                        <h3 class="text-lg font-bold text-gray-900 mb-1">Ghaitsya Faradiba</h3>
                         <p class="text-sm text-teal-600 font-medium mb-3">Fullstack Developer</p>
                         <div class="flex items-center justify-center space-x-3">
                             <a href="#" class="text-gray-400 hover:text-teal-600 transition">
@@ -284,7 +284,7 @@
                                     d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" />
                             </svg>
                         </div>
-                        <h3 class="text-lg font-bold text-gray-900 mb-1">Zakhanda Faishal Arifin</h3>
+                        <h3 class="text-lg font-bold text-gray-900 mb-1">Zakinanda Faishal Arifin</h3>
                         <p class="text-sm text-teal-600 font-medium mb-3">Fullstack Developer</p>
                         <div class="flex items-center justify-center space-x-3">
                             <a href="#" class="text-gray-400 hover:text-teal-600 transition">
@@ -312,7 +312,7 @@
                                     d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" />
                             </svg>
                         </div>
-                        <h3 class="text-lg font-bold text-gray-900 mb-1">Fathimatzahra Filhayati</h3>
+                        <h3 class="text-lg font-bold text-gray-900 mb-1">Fatimatuzzahra Filhayati</h3>
                         <p class="text-sm text-teal-600 font-medium mb-3">Quality Assurance</p>
                         <div class="flex items-center justify-center space-x-3">
                             <a href="#" class="text-gray-400 hover:text-teal-600 transition">

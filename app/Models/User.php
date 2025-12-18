@@ -2,11 +2,8 @@
 
 namespace App\Models;
 
-// --- TAMBAHAN: Import library Filament ---
 use Filament\Models\Contracts\FilamentUser;
 use Filament\Panel;
-// -----------------------------------------
-
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -47,7 +44,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereUpdatedAt($value)
  * @mixin \Eloquent
  */
-class User extends Authenticatable implements FilamentUser // <-- TAMBAHAN: implements FilamentUser
+class User extends Authenticatable implements FilamentUser
 {
     use Notifiable;
 
@@ -74,15 +71,6 @@ class User extends Authenticatable implements FilamentUser // <-- TAMBAHAN: impl
         ];
     }
 
-    // --- TAMBAHAN: LOGIKA HAK AKSES FILAMENT ---
-    public function canAccessPanel(Panel $panel): bool
-    {
-        // Hanya izinkan masuk jika kolom 'role' di database isinya 'admin'.
-        // Jika di database kamu pakai huruf besar (misal 'Admin'), ubah 'admin' jadi 'Admin' di bawah ini.
-        return $this->role === 'admin';
-    }
-    // -------------------------------------------
-
     /**
      * Get the complaints for the user.
      */
@@ -97,5 +85,14 @@ class User extends Authenticatable implements FilamentUser // <-- TAMBAHAN: impl
     public function complaintResponses(): HasMany
     {
         return $this->hasMany(ComplaintResponse::class);
+    }
+
+    public function canAccessPanel(Panel $panel): bool
+    {
+        if ($panel->getId() !== 'admin') {
+            return true;
+        }
+
+        return in_array($this->role, ['admin', 'opd'], true);
     }
 }

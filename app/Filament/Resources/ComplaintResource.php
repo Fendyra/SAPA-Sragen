@@ -9,7 +9,7 @@ use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
-use Illuminate\Support\Facades\Auth;
+use Filament\Facades\Filament;
 
 class ComplaintResource extends Resource
 {
@@ -26,14 +26,14 @@ class ComplaintResource extends Resource
                     ->label('Judul Aduan')
                     ->required()
                     ->maxLength(255)
-                    ->disabledOn('edit'), 
+                    ->disabledOn('edit'),
 
                 // 2. DESKRIPSI (Terkunci saat Edit)
                 Forms\Components\Textarea::make('description')
                     ->label('Isi Laporan')
                     ->required()
                     ->columnSpanFull()
-                    ->disabledOn('edit'), 
+                    ->disabledOn('edit'),
 
                 // 3. FOTO (Terkunci saat Edit)
                 Forms\Components\FileUpload::make('image')
@@ -47,12 +47,22 @@ class ComplaintResource extends Resource
 
                 Forms\Components\Select::make('status')
                     ->options(function () {
-                        if (Auth::check() && Auth::user()->role === 'admin') {
+                        $user = Filament::auth()->user();
+
+                        if ($user?->role === 'admin') {
                             return [
                                 'pending' => 'Pending (Baru)',
                                 'proses' => 'Sedang Diproses',
                                 'selesai' => 'Selesai',
                                 'ditolak' => 'Ditolak',
+                            ];
+                        }
+
+                        if ($user?->role === 'opd') {
+                            return [
+                                'pending' => 'Pending (Baru)',
+                                'proses' => 'Sedang Diproses',
+                                'menunggu_validasi' => 'Selesai Dikerjakan (Butuh Cek Admin)',
                             ];
                         }
 
@@ -68,7 +78,7 @@ class ComplaintResource extends Resource
                     ->relationship('category', 'name')
                     ->label('Kategori')
                     ->required()
-                    ->disabledOn('edit'), 
+                    ->disabledOn('edit'),
             ]);
     }
 
@@ -79,7 +89,7 @@ class ComplaintResource extends Resource
                 Tables\Columns\TextColumn::make('title')->searchable(),
                 Tables\Columns\TextColumn::make('status')
                     ->badge()
-                    ->color(fn (string $state): string => match ($state) {
+                    ->color(fn(string $state): string => match ($state) {
                         'pending' => 'gray',
                         'proses' => 'info',
                         'menunggu_validasi' => 'warning',

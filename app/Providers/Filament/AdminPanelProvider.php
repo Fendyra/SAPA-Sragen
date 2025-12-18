@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Providers\Filament;
 
 use Filament\Http\Middleware\Authenticate;
@@ -26,23 +27,24 @@ class AdminPanelProvider extends PanelProvider
             ->default()
             ->id('admin')
             ->path('admin')
+            ->authGuard('admin')
             ->login()
-            
+
             // --- CUSTOM SAPA SRAGEN ---
             ->brandName('SAPA SRAGEN')
-            ->brandLogo(asset('images/logo-sapa-sragen.png'))  
-            ->brandLogoHeight('48px')                          
-            ->favicon(asset('images/logo-sapa-sragen.png'))   
-            
+            ->brandLogo(asset('images/logo-sapa-sragen.png'))
+            ->brandLogoHeight('48px')
+            ->favicon(asset('images/logo-sapa-sragen.png'))
+
             ->font('Poppins')
             ->colors([
-                'primary' => '#002C5D', 
+                'primary' => '#002C5D',
             ])
             ->assets([
                 Css::make('sapa-admin', asset('css/sapa-admin.css')),
             ])
             // --------------------------
-            
+
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\\Filament\\Resources')
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\\Filament\\Pages')
             ->pages([

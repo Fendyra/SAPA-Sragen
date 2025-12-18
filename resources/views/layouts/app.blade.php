@@ -11,6 +11,9 @@
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=inter:400,500,600,700" rel="stylesheet" />
 
+    <!-- Alpine.js -->
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+
     <!-- Styles -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     <style>
@@ -28,7 +31,8 @@
                 <!-- Logo -->
                 <div class="flex items-center">
                     <a href="{{ url('/') }}" class="flex items-center space-x-3">
-                            <img src="{{ asset('assets/images/logo.png') }}" alt="SAPA SRAGEN" class="w-8 h-8 object-contain">
+                        <img src="{{ asset('assets/images/logo.png') }}" alt="SAPA SRAGEN"
+                            class="w-8 h-8 object-contain">
                         <span class="text-xl font-semibold text-gray-900">SAPA SRAGEN</span>
                     </a>
                 </div>
@@ -79,9 +83,9 @@
                 <!-- User Actions -->
                 <div class="flex items-center space-x-4">
                     @auth
-                        <div class="relative inline-block text-left">
-                            <button type="button" class="flex items-center space-x-2 text-gray-700 hover:text-gray-900"
-                                id="user-menu-button">
+                        <div class="relative inline-block text-left" x-data="{ open: false }">
+                            <button type="button" @click="open = !open"
+                                class="flex items-center space-x-2 text-gray-700 hover:text-gray-900" id="user-menu-button">
                                 <div class="w-8 h-8 bg-teal-600 rounded-full flex items-center justify-center">
                                     <span
                                         class="text-white text-sm font-medium">{{ substr(auth()->user()->name, 0, 1) }}</span>
@@ -92,13 +96,42 @@
                                         d="M19 9l-7 7-7-7"></path>
                                 </svg>
                             </button>
+
+                            <!-- Dropdown Menu -->
+                            <div x-show="open" @click.away="open = false"
+                                x-transition:enter="transition ease-out duration-100"
+                                x-transition:enter-start="transform opacity-0 scale-95"
+                                x-transition:enter-end="transform opacity-100 scale-100"
+                                x-transition:leave="transition ease-in duration-75"
+                                x-transition:leave-start="transform opacity-100 scale-100"
+                                x-transition:leave-end="transform opacity-0 scale-95"
+                                class="absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-50"
+                                style="display: none;">
+                                <div class="py-1">
+                                    <a href="{{ route('profile.show') }}"
+                                        class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 flex items-center space-x-2">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z">
+                                            </path>
+                                        </svg>
+                                        <span>Profil Saya</span>
+                                    </a>
+                                    <form method="POST" action="{{ route('logout') }}">
+                                        @csrf
+                                        <button type="submit"
+                                            class="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 flex items-center space-x-2">
+                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                    d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1">
+                                                </path>
+                                            </svg>
+                                            <span>Logout</span>
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
                         </div>
-                        <form method="POST" action="{{ route('logout') }}" class="inline">
-                            @csrf
-                            <button type="submit" class="px-4 py-2 text-sm font-medium text-gray-700 hover:text-gray-900">
-                                Logout
-                            </button>
-                        </form>
                     @else
                         <a href="{{ route('login') }}"
                             class="px-4 py-2 text-sm font-medium text-gray-700 hover:text-gray-900 border border-gray-300 rounded-md hover:bg-gray-50">
@@ -122,11 +155,13 @@
                 <!-- Brand -->
                 <div>
                     <div class="flex items-center space-x-3 mb-4">
-                        <img src="{{ asset('assets/images/logo.png') }}" alt="SAPA SRAGEN" class="w-8 h-8 object-contain">
+                        <img src="{{ asset('assets/images/logo.png') }}" alt="SAPA SRAGEN"
+                            class="w-8 h-8 object-contain">
                         <span class="text-xl font-semibold">SAPA SRAGEN</span>
                     </div>
                     <p class="text-sm text-gray-200 leading-relaxed">
-                        Sistem informasi layanan aspirasi dan pengaduan online masyarakat Kabupaten Sragen. Jembatan digital
+                        Sistem informasi layanan aspirasi dan pengaduan online masyarakat Kabupaten Sragen. Jembatan
+                        digital
                         antara warga dan pemerintah untuk Sragen yang lebih baik.
                     </p>
                 </div>
@@ -136,16 +171,20 @@
                     <h3 class="font-semibold text-lg mb-4">Tautan</h3>
                     <ul class="space-y-2 text-sm">
                         <li>
-                            <a href="{{ auth()->check() ? route('dashboard') : route('home') }}" class="hover:text-teal-300 transition">Dashboard</a>
+                            <a href="{{ auth()->check() ? route('dashboard') : route('home') }}"
+                                class="hover:text-teal-300 transition">Dashboard</a>
                         </li>
                         <li>
-                            <a href="{{ route('reports.create') }}" class="hover:text-teal-300 transition">Buat Aduan</a>
+                            <a href="{{ route('reports.create') }}" class="hover:text-teal-300 transition">Buat
+                                Aduan</a>
                         </li>
                         <li>
-                            <a href="{{ route('reports.index') }}" class="hover:text-teal-300 transition">Riwayat Saya</a>
+                            <a href="{{ route('reports.index') }}" class="hover:text-teal-300 transition">Riwayat
+                                Saya</a>
                         </li>
                         <li>
-                            <a href="{{ route('reports.public') }}" class="hover:text-teal-300 transition">Aduan Publik</a>
+                            <a href="{{ route('reports.public') }}" class="hover:text-teal-300 transition">Aduan
+                                Publik</a>
                         </li>
                     </ul>
                 </div>
@@ -154,11 +193,14 @@
                 <div>
                     <h3 class="font-semibold text-lg mb-4">Bantuan</h3>
                     <ul class="space-y-2 text-sm">
-                        <li><a href="{{ route('faq') }}" class="hover:text-teal-300 transition">Cara Melapor</a></li>
-                        <li><a href="{{ route('faq') }}" class="hover:text-teal-300 transition">FAQ</a></li>
-                        <li><a href="{{ route('faq') }}" class="hover:text-teal-300 transition">Syarat & Ketentuan</a>
+                        <li><a href="{{ route('faq') }}" class="hover:text-teal-300 transition">Cara Melapor</a>
                         </li>
-                        <li><a href="{{ route('faq') }}" class="hover:text-teal-300 transition">Kebijakan Privasi</a>
+                        <li><a href="{{ route('faq') }}" class="hover:text-teal-300 transition">FAQ</a></li>
+                        <li><a href="{{ route('faq') }}" class="hover:text-teal-300 transition">Syarat &
+                                Ketentuan</a>
+                        </li>
+                        <li><a href="{{ route('faq') }}" class="hover:text-teal-300 transition">Kebijakan
+                                Privasi</a>
                         </li>
                     </ul>
                 </div>
