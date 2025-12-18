@@ -6,7 +6,19 @@
 
     <div class="py-8 bg-gray-50 min-h-screen">
         <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-            <!-- Back Button -->
+            
+            @if ($errors->any())
+                <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-6" role="alert">
+                    <strong class="font-bold">Gagal Mengirim!</strong>
+                    <span class="block sm:inline">Mohon periksa inputan berikut:</span>
+                    <ul class="mt-1 list-disc list-inside text-sm">
+                        @foreach ($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+            @endif
+
             <div class="mb-6">
                 <a href="{{ route('dashboard') }}"
                     class="inline-flex items-center text-gray-600 hover:text-gray-900 font-medium">
@@ -18,17 +30,14 @@
                 </a>
             </div>
 
-            <!-- Header -->
             <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6 mb-6">
                 <h1 class="text-2xl font-bold text-gray-900 mb-2">Sampaikan Laporan Anda</h1>
                 <p class="text-gray-600">Isi formulir di bawah ini dengan data yang lengkap dan valid</p>
             </div>
 
-            <!-- Form -->
             <form action="{{ route('reports.store') }}" method="POST" enctype="multipart/form-data">
                 @csrf
 
-                <!-- Informasi Aduan Section -->
                 <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6 mb-6">
                     <div class="flex items-center mb-6">
                         <div class="w-10 h-10 bg-teal-100 rounded-lg flex items-center justify-center mr-3">
@@ -41,7 +50,6 @@
                         <h2 class="text-lg font-bold text-gray-900">Informasi Aduan</h2>
                     </div>
 
-                    <!-- Judul Laporan -->
                     <div class="mb-5">
                         <label for="title" class="block text-sm font-medium text-gray-700 mb-2">
                             Judul Laporan <span class="text-red-500">*</span>
@@ -56,32 +64,28 @@
                         @enderror
                     </div>
 
-                    <!-- Kategori -->
                     <div class="mb-5">
-                        <label for="category" class="block text-sm font-medium text-gray-700 mb-2">
+                        <label for="category_id" class="block text-sm font-medium text-gray-700 mb-2">
                             Kategori <span class="text-red-500">*</span>
                         </label>
-                        <select id="category" name="category"
-                            class="w-full border border-gray-300 rounded-lg px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent @error('category') border-red-500 @enderror"
+                        <select id="category_id" name="category_id"
+                            class="w-full border border-gray-300 rounded-lg px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent @error('category_id') border-red-500 @enderror"
                             required>
                             <option value="">Pilih Kategori Laporan</option>
-                            <option value="infrastruktur" {{ old('category') == 'infrastruktur' ? 'selected' : '' }}>
-                                Infrastruktur</option>
-                            <option value="kesehatan" {{ old('category') == 'kesehatan' ? 'selected' : '' }}>Kesehatan
-                            </option>
-                            <option value="lingkungan" {{ old('category') == 'lingkungan' ? 'selected' : '' }}>Lingkungan
-                            </option>
-                            <option value="keamanan" {{ old('category') == 'keamanan' ? 'selected' : '' }}>Keamanan</option>
-                            <option value="sosial" {{ old('category') == 'sosial' ? 'selected' : '' }}>Sosial</option>
-                            <option value="administrasi" {{ old('category') == 'administrasi' ? 'selected' : '' }}>
-                                Administrasi</option>
+                            
+                            {{-- Mengambil data kategori asli dari database --}}
+                            @foreach($categories as $category)
+                                <option value="{{ $category->id }}" {{ old('category_id') == $category->id ? 'selected' : '' }}>
+                                    {{ $category->name }}
+                                </option>
+                            @endforeach
+                            
                         </select>
-                        @error('category')
+                        @error('category_id')
                             <p class="text-xs text-red-500 mt-1">{{ $message }}</p>
                         @enderror
                     </div>
 
-                    <!-- Deskripsi Lengkap -->
                     <div class="mb-5">
                         <label for="description" class="block text-sm font-medium text-gray-700 mb-2">
                             Deskripsi Lengkap <span class="text-red-500">*</span>
@@ -96,7 +100,6 @@
                     </div>
                 </div>
 
-                <!-- Lokasi Kejadian Section -->
                 <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6 mb-6">
                     <div class="flex items-center mb-6">
                         <div class="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center mr-3">
@@ -111,99 +114,59 @@
                         <h2 class="text-lg font-bold text-gray-900">Lokasi Kejadian</h2>
                     </div>
 
-                    <!-- Titik Lokasi di Peta -->
                     <div class="mb-5">
-                        <label class="block text-sm font-medium text-gray-700 mb-2">
-                            Titik Lokasi di Peta <span class="text-red-500">*</span>
-                        </label>
-                        <p class="text-xs text-gray-500 mb-3">Geser peta atau klik di mencari lokasi yang tepat</p>
+                        <p class="text-xs text-gray-500 mb-3">Detail Wilayah</p>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-5">
+                            <div>
+                                <label for="district" class="block text-sm font-medium text-gray-700 mb-2">
+                                    Kecamatan <span class="text-red-500">*</span>
+                                </label>
+                                <select id="district" name="district"
+                                    class="w-full border border-gray-300 rounded-lg px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent @error('district') border-red-500 @enderror"
+                                    required>
+                                    <option value="">Pilih Kecamatan</option>
+                                    <option value="Sragen" {{ old('district') == 'Sragen' ? 'selected' : '' }}>Sragen</option>
+                                    <option value="Kedawung" {{ old('district') == 'Kedawung' ? 'selected' : '' }}>Kedawung</option>
+                                    <option value="Kalijambe" {{ old('district') == 'Kalijambe' ? 'selected' : '' }}>Kalijambe</option>
+                                    <option value="Plupuh" {{ old('district') == 'Plupuh' ? 'selected' : '' }}>Plupuh</option>
+                                    <option value="Masaran" {{ old('district') == 'Masaran' ? 'selected' : '' }}>Masaran</option>
+                                    <option value="Sidoharjo" {{ old('district') == 'Sidoharjo' ? 'selected' : '' }}>Sidoharjo</option>
+                                    <option value="Tanon" {{ old('district') == 'Tanon' ? 'selected' : '' }}>Tanon</option>
+                                    <option value="Gemolong" {{ old('district') == 'Gemolong' ? 'selected' : '' }}>Gemolong</option>
+                                </select>
+                                @error('district')
+                                    <p class="text-xs text-red-500 mt-1">{{ $message }}</p>
+                                @enderror
+                            </div>
 
-                        <!-- Map Container -->
-                        <div class="border-2 border-dashed border-gray-300 rounded-lg overflow-hidden bg-gray-50"
-                            style="height: 300px;">
-                            <div id="map" class="w-full h-full relative">
-                                <!-- Placeholder for map -->
-                                <img src="https://api.mapbox.com/styles/v1/mapbox/streets-v11/static/110.8456,-7.4461,13,0/600x300@2x?access_token=pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4NXVycTA2emYycXBndHRqcmZ3N3gifQ.rJcFIG214AriISLbB6B5aw"
-                                    alt="Map" class="w-full h-full object-cover">
-                                <div class="absolute inset-0 flex items-center justify-center">
-                                    <div class="bg-white rounded-lg shadow-lg p-4 text-center">
-                                        <svg class="w-8 h-8 text-teal-600 mx-auto mb-2" fill="none" stroke="currentColor"
-                                            viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z">
-                                            </path>
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
-                                        </svg>
-                                        <p class="text-sm text-gray-700">Klik untuk menandai lokasi</p>
-                                    </div>
-                                </div>
+                            <div>
+                                <label for="village" class="block text-sm font-medium text-gray-700 mb-2">
+                                    Kelurahan/Desa <span class="text-red-500">*</span>
+                                </label>
+                                <input type="text" id="village" name="village" placeholder="Nama Desa/Kelurahan"
+                                    class="w-full border border-gray-300 rounded-lg px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent @error('village') border-red-500 @enderror"
+                                    value="{{ old('village') }}" required>
+                                @error('village')
+                                    <p class="text-xs text-red-500 mt-1">{{ $message }}</p>
+                                @enderror
                             </div>
                         </div>
-                        <input type="hidden" id="latitude" name="latitude" value="{{ old('latitude') }}">
-                        <input type="hidden" id="longitude" name="longitude" value="{{ old('longitude') }}">
-                    </div>
 
-                    <!-- Grid for Kecamatan, Kelurahan, Detail Alamat -->
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-5">
-                        <!-- Kecamatan -->
-                        <div>
-                            <label for="district" class="block text-sm font-medium text-gray-700 mb-2">
-                                Kecamatan <span class="text-red-500">*</span>
+                        <div class="mb-5">
+                            <label for="address" class="block text-sm font-medium text-gray-700 mb-2">
+                                Detail Alamat <span class="text-red-500">*</span>
                             </label>
-                            <select id="district" name="district"
-                                class="w-full border border-gray-300 rounded-lg px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent @error('district') border-red-500 @enderror"
-                                required>
-                                <option value="">Pilih Kecamatan</option>
-                                <option value="sragen" {{ old('district') == 'sragen' ? 'selected' : '' }}>Sragen</option>
-                                <option value="kedawung" {{ old('district') == 'kedawung' ? 'selected' : '' }}>Kedawung
-                                </option>
-                                <option value="kalijambe" {{ old('district') == 'kalijambe' ? 'selected' : '' }}>Kalijambe
-                                </option>
-                                <option value="plupuh" {{ old('district') == 'plupuh' ? 'selected' : '' }}>Plupuh</option>
-                                <option value="masaran" {{ old('district') == 'masaran' ? 'selected' : '' }}>Masaran
-                                </option>
-                                <option value="sidoharjo" {{ old('district') == 'sidoharjo' ? 'selected' : '' }}>Sidoharjo
-                                </option>
-                                <option value="tanon" {{ old('district') == 'tanon' ? 'selected' : '' }}>Tanon</option>
-                                <option value="gemolong" {{ old('district') == 'gemolong' ? 'selected' : '' }}>Gemolong
-                                </option>
-                            </select>
-                            @error('district')
+                            <input type="text" id="address" name="address"
+                                placeholder="Contoh: Jl. Sukawati No. 13, dekat Indomaret ABC"
+                                class="w-full border border-gray-300 rounded-lg px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent @error('address') border-red-500 @enderror"
+                                value="{{ old('address') }}" required>
+                            @error('address')
                                 <p class="text-xs text-red-500 mt-1">{{ $message }}</p>
                             @enderror
                         </div>
-
-                        <!-- Kelurahan/Desa -->
-                        <div>
-                            <label for="village" class="block text-sm font-medium text-gray-700 mb-2">
-                                Kelurahan/Desa <span class="text-red-500">*</span>
-                            </label>
-                            <input type="text" id="village" name="village" placeholder="Nama Desa/Kelurahan"
-                                class="w-full border border-gray-300 rounded-lg px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent @error('village') border-red-500 @enderror"
-                                value="{{ old('village') }}" required>
-                            @error('village')
-                                <p class="text-xs text-red-500 mt-1">{{ $message }}</p>
-                            @enderror
-                        </div>
-                    </div>
-
-                    <!-- Detail Alamat -->
-                    <div class="mb-5">
-                        <label for="address" class="block text-sm font-medium text-gray-700 mb-2">
-                            Detail Alamat <span class="text-red-500">*</span>
-                        </label>
-                        <input type="text" id="address" name="address"
-                            placeholder="Contoh: Jl. Sukawati No. 13, dekat Indomaret ABC"
-                            class="w-full border border-gray-300 rounded-lg px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent @error('address') border-red-500 @enderror"
-                            value="{{ old('address') }}" required>
-                        @error('address')
-                            <p class="text-xs text-red-500 mt-1">{{ $message }}</p>
-                        @enderror
                     </div>
                 </div>
 
-                <!-- Bukti Pendukung Section -->
                 <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6 mb-6">
                     <div class="flex items-center mb-6">
                         <div class="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center mr-3">
@@ -217,13 +180,11 @@
                         <h2 class="text-lg font-bold text-gray-900">Bukti Pendukung</h2>
                     </div>
 
-                    <!-- Upload Area -->
                     <div class="mb-4">
                         <label class="block text-sm font-medium text-gray-700 mb-2">
-                            Upload Foto/File
+                            Upload Foto (Wajib ada minimal 1 foto)
                         </label>
-                        <div
-                            class="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center hover:border-teal-500 transition cursor-pointer bg-gray-50">
+                        <div class="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center hover:border-teal-500 transition cursor-pointer bg-gray-50">
                             <input type="file" id="files" name="files[]" multiple accept="image/*,.pdf"
                                 class="hidden" onchange="handleFileSelect(event)">
                             <label for="files" class="cursor-pointer">
@@ -233,34 +194,18 @@
                                         d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12">
                                     </path>
                                 </svg>
-                                <p class="text-sm font-medium text-gray-900 mb-1">Tarik & Lepas File di sini</p>
-                                <p class="text-xs text-gray-500 mb-1">atau klik untuk memilih file dari perangkat Anda</p>
+                                <p class="text-sm font-medium text-gray-900 mb-1">Klik untuk pilih foto</p>
                             </label>
                         </div>
-                        <p class="text-xs text-gray-500 mt-2">Format yang diizinkan: JPG, PNG, PDF. Max. 5MB per file</p>
+                        @error('files')
+                             <p class="text-xs text-red-500 mt-1">{{ $message }}</p>
+                        @enderror
                     </div>
 
-                    <!-- File Preview Area -->
                     <div id="file-preview" class="grid grid-cols-2 md:grid-cols-4 gap-4 mt-4 hidden">
-                        <!-- Files will be displayed here -->
-                    </div>
+                        </div>
                 </div>
 
-                <!-- Lapor sebagai Anonim -->
-                <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6 mb-6">
-                    <div class="flex items-start">
-                        <input type="checkbox" id="is_anonymous" name="is_anonymous" value="1"
-                            class="mt-1 w-4 h-4 text-teal-600 border-gray-300 rounded focus:ring-teal-500"
-                            {{ old('is_anonymous') ? 'checked' : '' }}>
-                        <label for="is_anonymous" class="ml-3">
-                            <span class="block text-sm font-medium text-gray-900">Lapor sebagai Anonim</span>
-                            <span class="block text-xs text-gray-500 mt-1">Nama Anda akan muncul pada detail laporan, namun
-                                hanya bisa dilihat admin</span>
-                        </label>
-                    </div>
-                </div>
-
-                <!-- Action Buttons -->
                 <div class="flex items-center justify-end space-x-4">
                     <a href="{{ route('dashboard') }}"
                         class="px-6 py-2.5 border border-gray-300 rounded-lg text-gray-700 font-medium hover:bg-gray-50 transition">
@@ -299,51 +244,18 @@
                                 div.innerHTML = `
                         <img src="${e.target.result}" class="w-full h-24 object-cover rounded mb-2">
                         <p class="text-xs text-gray-600 truncate">${file.name}</p>
-                        <button type="button" onclick="removeFile(${index})" class="absolute top-2 right-2 bg-red-500 text-white rounded-full p-1 hover:bg-red-600">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-                            </svg>
-                        </button>
                     `;
                             };
                             reader.readAsDataURL(file);
                         } else {
                             div.innerHTML = `
-                    <div class="flex items-center justify-center h-24 mb-2">
-                        <svg class="w-12 h-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path>
-                        </svg>
-                    </div>
                     <p class="text-xs text-gray-600 truncate">${file.name}</p>
-                    <button type="button" onclick="removeFile(${index})" class="absolute top-2 right-2 bg-red-500 text-white rounded-full p-1 hover:bg-red-600">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-                        </svg>
-                    </button>
                 `;
                         }
 
                         preview.appendChild(div);
                     });
                 }
-            }
-
-            function removeFile(index) {
-                // Implementation for removing specific file
-                const input = document.getElementById('files');
-                const dt = new DataTransfer();
-                const files = input.files;
-
-                for (let i = 0; i < files.length; i++) {
-                    if (i !== index) {
-                        dt.items.add(files[i]);
-                    }
-                }
-
-                input.files = dt.files;
-                handleFileSelect({
-                    target: input
-                });
             }
         </script>
     @endpush
