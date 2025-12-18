@@ -28,9 +28,7 @@
                 <!-- Logo -->
                 <div class="flex items-center">
                     <a href="{{ url('/') }}" class="flex items-center space-x-3">
-                        <div class="w-10 h-10 bg-blue-900 rounded-full flex items-center justify-center">
-                            <span class="text-white font-bold text-xl">S</span>
-                        </div>
+                            <img src="{{ asset('assets/images/logo.png') }}" alt="SAPA SRAGEN" class="w-8 h-8 object-contain">
                         <span class="text-xl font-semibold text-gray-900">SAPA SRAGEN</span>
                     </a>
                 </div>
@@ -120,18 +118,16 @@
     <!-- Footer -->
     <footer class="bg-gradient-to-r from-teal-700 to-blue-900 text-white mt-16">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-10">
                 <!-- Brand -->
                 <div>
                     <div class="flex items-center space-x-3 mb-4">
-                        <div class="w-10 h-10 bg-white rounded-full flex items-center justify-center">
-                            <span class="text-blue-900 font-bold text-xl">S</span>
-                        </div>
+                        <img src="{{ asset('assets/images/logo.png') }}" alt="SAPA SRAGEN" class="w-8 h-8 object-contain">
                         <span class="text-xl font-semibold">SAPA SRAGEN</span>
                     </div>
                     <p class="text-sm text-gray-200 leading-relaxed">
-                        Sistem informasi layanan aspirasi dan pengaduan online masyarakat Kabupaten Sragen. Sampaikan
-                        keluhan Anda, pantau prosesnya secara transparan.
+                        Sistem informasi layanan aspirasi dan pengaduan online masyarakat Kabupaten Sragen. Jembatan digital
+                        antara warga dan pemerintah untuk Sragen yang lebih baik.
                     </p>
                 </div>
 
@@ -139,12 +135,18 @@
                 <div>
                     <h3 class="font-semibold text-lg mb-4">Tautan</h3>
                     <ul class="space-y-2 text-sm">
-                        <li><a href="{{ url('/') }}" class="hover:text-teal-300 transition">Dashboard</a></li>
-                        <li><a href="{{ url('/aduan') }}" class="hover:text-teal-300 transition">Buat Aduan</a></li>
-                        <li><a href="{{ url('/riwayat') }}" class="hover:text-teal-300 transition">Riwayat Saya</a>
+                        <li>
+                            <a href="{{ auth()->check() ? route('dashboard') : route('home') }}" class="hover:text-teal-300 transition">Dashboard</a>
                         </li>
-                        <li><a href="{{ url('/aduan-publik') }}" class="hover:text-teal-300 transition">Aduan
-                                Publik</a></li>
+                        <li>
+                            <a href="{{ route('reports.create') }}" class="hover:text-teal-300 transition">Buat Aduan</a>
+                        </li>
+                        <li>
+                            <a href="{{ route('reports.index') }}" class="hover:text-teal-300 transition">Riwayat Saya</a>
+                        </li>
+                        <li>
+                            <a href="{{ route('reports.public') }}" class="hover:text-teal-300 transition">Aduan Publik</a>
+                        </li>
                     </ul>
                 </div>
 
