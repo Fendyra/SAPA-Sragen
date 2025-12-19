@@ -34,6 +34,13 @@ class ResponsesRelationManager extends RelationManager
                     ->reorderable()
                     ->maxFiles(5)
                     ->columnSpanFull(),
+                
+                // Toggle untuk Admin: Approve bukti pengerjaan
+                Forms\Components\Toggle::make('is_public')
+                    ->label('Tampilkan ke Warga')
+                    ->helperText('Aktifkan untuk menampilkan bukti ini ke warga setelah divalidasi')
+                    ->visible(fn(): bool => Filament::auth()->user()?->role === 'admin')
+                    ->columnSpanFull(),
             ]);
     }
 
@@ -71,9 +78,11 @@ class ResponsesRelationManager extends RelationManager
                     ->mutateFormDataUsing(function (array $data): array {
                         $data['user_id'] = Filament::auth()->id();
 
+                        // PENTING: Default bukti pengerjaan dari OPD tidak langsung public
+                        // Hanya admin yang bisa set is_public = true setelah validasi
                         $role = Filament::auth()->user()?->role;
-                        $data['is_public'] = $role === 'admin' ? false : true;
-
+                        $data['is_public'] = false; // Default: tidak public untuk semua user
+                        
                         return $data;
                     })
                     ->visible(fn(): bool => in_array(Filament::auth()->user()?->role, ['admin', 'opd'], true)),
@@ -82,6 +91,37 @@ class ResponsesRelationManager extends RelationManager
                 Tables\Actions\ViewAction::make(),
                 Tables\Actions\EditAction::make()
                     ->visible(fn(): bool => in_array(Filament::auth()->user()?->role, ['admin', 'opd'], true)),
+                
+                // Action untuk Admin: Approve/Validasi bukti dari OPD
+                Tables\Actions\Action::make('approve')
+                    ->label('Validasi Bukti')
+                    ->tooltip('Setujui bukti pengerjaan ini untuk ditampilkan ke warga')
+                    ->icon('heroicon-o-check-circle')
+                    ->color('success')
+                    ->requiresConfirmation()
+                    ->visible(fn($record): bool => 
+                        Filament::auth()->user()?->role === 'admin' && 
+                        $record->is_public === false
+                    )
+                    ->action(function ($record) {
+                        $record->update(['is_public' => true]);
+                    }),
+                
+                // Action untuk Admin: Tolak/Unapprove bukti dari OPD
+                Tables\Actions\Action::make('reject')
+                    ->label('Tolak Bukti')
+                    ->tooltip('Tolak bukti pengerjaan ini')
+                    ->icon('heroicon-o-x-circle')
+                    ->color('danger')
+                    ->requiresConfirmation()
+                    ->visible(fn($record): bool => 
+                        Filament::auth()->user()?->role === 'admin' && 
+                        $record->is_public === true
+                    )
+                    ->action(function ($record) {
+                        $record->update(['is_public' => false]);
+                    }),
+                
                 Tables\Actions\DeleteAction::make()
                     ->visible(fn(): bool => Filament::auth()->user()?->role === 'admin'),
             ])
